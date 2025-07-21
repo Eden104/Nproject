@@ -41,10 +41,10 @@ return [
             'provider' => 'users',
         ],
         
-    'client' => [
+    /*'client' => [
         'driver' => 'session',
         'provider' => 'clients',
-    ],
+    ],*/
 
     ],
 
@@ -70,10 +70,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-        'clients' => [
+        /*'clients' => [
             'driver' => 'eloquent',
             'model' => App\Models\Client::class,
-        ],
+        ],*/
 
 
         // 'users' => [
@@ -110,11 +110,11 @@ return [
         ],
     ],
 
-    'admins' => [
+    /*'admins' => [
         
         'driver' => 'eloquent',
         'provider' => 'admins',
-    ],
+    ],*/
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout

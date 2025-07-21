@@ -33,8 +33,17 @@
         </ul>
 
         <h3>Laisser un avis</h3>
-        @auth('client')
-        <form action="{{ route('shop.review', $product->slug) }}" method="POST" class="review-form">
+
+        {{-- Affichage message d'erreur/succès --}}
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        @auth
+        <form action="{{ route('shop.reviews.store', $product) }}" method="POST" class="review-form">
             @csrf
             <div class="form-group">
                 <label for="rating">Note (1 à 5)</label>
