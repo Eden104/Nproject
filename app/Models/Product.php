@@ -3,11 +3,27 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 class Product extends Model
 {
+    use sluggable;
     protected $casts =['reviews' => 'array'];
-    protected $fillable = ['name', 'slug', 'description', 'image', 'price', 'sales_count', 'reviews', 'average_rating', 'product_category_id'];
+    protected $fillable = ['name', 'description', 'image', 'price', 'sales_count', 'reviews', 'average_rating', 'product_category_id'];
+    //configuration du slug automatique 
+    public function sluggable():array{
+        return [
+            'slug' => [
+                'source' => 'name',
+                'onUpdate' => true,
+            ]
+         ];
+    }
+
+    //Pour trouver l'article par son slug au lieu de son ID dans leds routes
+    public function getRouteKeyName(){
+        return 'slug';
+    }
     public function category(){
         return $this->belongsTo(ProductCategory::class,'product_category_id');
     }

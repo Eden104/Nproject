@@ -6,18 +6,11 @@
     <header>
         <img src="{{asset('Dsite/image/brand-logo.svg')}}" width="100" alt="myshop logo">
         <nav class="main-nav">
-            <ul>
-                <li><a href="{{route('accueil')}}">Home</a></li>
-                <li><a href="{{route('shop.index')}}">Shop</a></li>
-                <li><a href="{{route('blog.index')}}">Blog</a></li>
-                <li><a href="contact.html" id="selected">Contact</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li><a href="{{route('signup')}}">Signup</a></li>
-                <li><a href="{{ route('admin.products.index') }}">Gestion Produits</a></li>
-                <li><a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a></li>
-                <li><a href="{{ route('admin.articles.index') }}">Gestion Articles</a></li>
-                <li><a href="{{ route('admin.article_categories.index') }}">Gestion Catégories Articles</a></li>
-            </ul>
+           <a href="{{ route('admin.dashboard') }}">Home-D</a>
+           <a href="{{ route('admin.products.index') }}">Gestion Produits</a>
+           <a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a>
+           <a href="{{ route('admin.articles.index') }}">Gestion Articles</a>
+           <a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a>
            
 
             @auth
@@ -55,7 +48,22 @@
 @endsection
 
 @section('content')
+<div class="container">
+    <h1>Nouvelle catégorie</h1>
 
+    <form action="{{ route('admin.article-categories.store') }}" method="POST">
+        @csrf
+
+        <div class="form-group">
+            <label>Nom</label>
+            <input type="text" name="name" class="form-control" required>
+            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <button class="btn btn-success">Créer</button>
+        <a href="{{ route('admin.article-categories.index') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 
 
 @endsection

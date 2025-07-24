@@ -16,7 +16,7 @@
                 <li><a href="{{ route('admin.products.index') }}">Gestion Produits</a></li>
                 <li><a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a></li>
                 <li><a href="{{ route('admin.articles.index') }}">Gestion Articles</a></li>
-                <li><a href="{{ route('admin.article_categories.index') }}">Gestion Catégories Articles</a></li>
+                <li><a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a></li>
             </ul>
            
 

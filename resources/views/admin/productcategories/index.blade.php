@@ -55,7 +55,43 @@
 @endsection
 
 @section('content')
+<div class="container">
+    <h1>Catégories de produits</h1>
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <a href="{{ route('categories.create') }}" class="btn btn-primary mb-3">Ajouter une catégorie</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Slug</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($categories as $category)
+                <tr>
+                    <td>{{ $category->name }}</td>
+                    <td>{{ $category->slug }}</td>
+                    <td>
+                        <a href="{{ route('categories.edit', $category) }}" class="btn btn-sm btn-warning">Modifier</a>
+                        <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Supprimer cette catégorie ?');">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="3">Aucune catégorie trouvée.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
 
 @endsection

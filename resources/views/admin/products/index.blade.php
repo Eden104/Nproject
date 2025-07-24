@@ -1,24 +1,100 @@
-@extends('layouts.app')
+@extends('layouts.layout23')
+@section('title', 'Accueil2')
+
+@section('header')
+  <!-- ***************** header ***************** -->
+    <header>
+        <img src="{{asset('Dsite/image/brand-logo.svg')}}" width="100" alt="myshop logo">
+        <nav class="main-nav">
+           <a href="{{ route('admin.dashboard') }}">Home-D</a>
+           <a href="{{ route('admin.products.index') }}">Gestion Produits</a>
+           <a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a>
+           <a href="{{ route('admin.articles.index') }}">Gestion Articles</a>
+           <a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a>
+           
+
+            @auth
+            <!-- Bouton de déconnexion (visible seulement quand connecté) -->
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: blue; cursor: pointer; font: inherit;">
+                    Déconnexion
+                </button>
+            </form>
+            @endauth
+
+            <svg onclick="darkMode()" viewBox="0 0 512 512" width="25px" id="sun-icon">
+                <g id="Sun">
+                    <path d="M255.8,120a136,136,0,1,0,136,136.05v0A136.17,136.17,0,0,0,255.8,120Z" style="fill:#1e1e1e"/>
+                    <path d="M472,232H440a24,24,0,0,0,0,48h32a24,24,0,0,0,0-48Z" style="fill:#1e1e1e"/>
+                    <path d="M255.8,416a24,24,0,0,0-24,24v32a24,24,0,1,0,48,0V440A24,24,0,0,0,255.8,416Z" style="fill:#1e1e1e"/>
+                    <path d="M96,256.05a24,24,0,0,0-24-24H40a24,24,0,1,0,0,48H72A24,24,0,0,0,96,256.05Z" style="fill:#1e1e1e"/>
+                    <path d="M255.8,96a24,24,0,0,0,24-24V40a24,24,0,0,0-48,0V72a24,24,0,0,0,24,24Z" style="fill:#1e1e1e"/>
+                    <path d="M402.89,142.87l22.63-22.63a24,24,0,0,0-33.85-34l-.07.07L369,109a24,24,0,0,0,33.86,34Z" style="fill:#1e1e1e"/>
+                    <path d="M402.89,369.22a24,24,0,0,0-34,33.87l.06.05,22.63,22.63a24,24,0,0,0,34-33.86l-.06-.06Z" style="fill:#1e1e1e"/>
+                    <path d="M108.7,369.22,86.07,391.85a24,24,0,1,0,33.85,34l.07-.07,22.63-22.63a24,24,0,1,0-33.86-34Z" style="fill:#1e1e1e"/>
+                    <path d="M108.7,142.87a24,24,0,1,0,34-33.89l0,0L120,86.32a24,24,0,1,0-34,33.83l.09.09Z" style="fill:#1e1e1e"/>
+                </g>
+            </svg>
+            <svg onclick="lightMode()" viewBox="0 0 312.81 311.51" width="25px" id="moon-icon">
+                <path d="M305.2,178.16a11,11,0,0,0-9.2,2A117.36,117.36,0,0,1,260.4,201a111.48,111.48,0,0,1-40.4,7.2A117.45,117.45,0,0,1,102.4,90.56a123.27,123.27,0,0,1,6.4-38.8A107.41,107.41,0,0,1,128,17.36,10.21,10.21,0,0,0,126.4,3a11,11,0,0,0-9.2-2,161.41,161.41,0,0,0-84.8,56.8,158.38,158.38,0,1,0,280,132.8A9.71,9.71,0,0,0,305.2,178.16Z" transform="translate(0 -0.65)" style="fill:#1e1e1e"/>
+            </svg>
+        </nav>
+    </header>
+@endsection 
+
+@section('footer')
+ @include('front.footer23')
+@endsection
 
 @section('content')
 <div class="container">
-    <h1>Gestion des Produits</h1>
-    <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Nouveau Produit</a>
+    <h1>Produits</h1>
 
-    <div class="row">
-        @foreach($products as $product)
-        <div class="col-md-4 mb-4">
-            <div class="card">
-                <img src="{{ asset('storage/'.$product->image) }}" class="card-img-top" alt="{{ $product->name }}">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $product->name }}</h5>
-                    <p class="card-text">{{ $product->category->name }}</p>
-                    <p class="h4">{{ number_format($product->price, 2) }} €</p>
-                    <a href="{{ route('products.show', $product) }}" class="btn btn-primary">Détails</a>
-                </div>
-            </div>
-        </div>
-        @endforeach
-    </div>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
+    <a href="{{ route('admin.products.create') }}" class="btn btn-primary mb-3">Ajouter un produit</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Catégorie</th>
+                <th>Prix</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($products as $product)
+            <tr>
+                <td>{{ $product->name }}</td>
+                <td>{{ $product->category->name ?? '—' }}</td>
+                <td>{{ number_format($product->price, 2, ',', ' ') }} €</td>
+                <td>
+                    @if($product->image)
+                        <img src="{{ asset('storage/' . $product->image) }}" alt="" width="60">
+                    @endif
+                </td>
+                <td>
+                    <a href="{{ route('admin.products.edit', $product) }}" class="btn btn-sm btn-warning">Modifier</a>
+                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Supprimer ce produit ?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-sm btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+                <tr><td colspan="5">Aucun produit trouvé.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    {{ $products->links() }}
 </div>
+
+
 @endsection

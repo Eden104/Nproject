@@ -16,7 +16,7 @@
                 <li><a href="{{ route('admin.products.index') }}">Gestion Produits</a></li>
                 <li><a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a></li>
                 <li><a href="{{ route('admin.articles.index') }}">Gestion Articles</a></li>
-                <li><a href="{{ route('admin.article_categories.index') }}">Gestion Catégories Articles</a></li>
+                <li><a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a></li>
             </ul>
            
 
@@ -56,6 +56,52 @@
 
 @section('content')
 
+<div class="container">
+    <h1>Ajouter un produit</h1>
 
+    <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+
+        <div class="form-group">
+            <label>Nom</label>
+            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" class="form-control" required>{{ old('description') }}</textarea>
+            @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Prix (€)</label>
+            <input type="number" step="0.01" name="price" class="form-control" value="{{ old('price') }}" required>
+            @error('price') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Catégorie</label>
+            <select name="product_category_id" class="form-control" required>
+                <option value="">-- Choisir --</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ old('product_category_id') == $cat->id ? 'selected' : '' }}>
+                        {{ $cat->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('product_category_id') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Image</label>
+            <input type="file" name="image" class="form-control-file" required>
+            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a href="{{ route('products.index') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 
 @endsection

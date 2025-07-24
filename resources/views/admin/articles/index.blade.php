@@ -1,34 +1,94 @@
-@extends('layouts.app')
+@extends('layouts.layout23')
+@section('title', 'Accueil2')
+
+@section('header')
+  <!-- ***************** header ***************** -->
+    <header>
+        <img src="{{asset('Dsite/image/brand-logo.svg')}}" width="100" alt="myshop logo">
+        <nav class="main-nav">
+           <a href="{{ route('admin.dashboard') }}">Home-D</a>
+           <a href="{{ route('admin.products.index') }}">Gestion Produits</a>
+           <a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a>
+           <a href="{{ route('admin.articles.index') }}">Gestion Articles</a>
+           <a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a>
+            
+           
+
+            @auth
+            <!-- Bouton de déconnexion (visible seulement quand connecté) -->
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" style="background: none; border: none; color: blue; cursor: pointer; font: inherit;">
+                    Déconnexion
+                </button>
+            </form>
+            @endauth
+
+            <svg onclick="darkMode()" viewBox="0 0 512 512" width="25px" id="sun-icon">
+                <g id="Sun">
+                    <path d="M255.8,120a136,136,0,1,0,136,136.05v0A136.17,136.17,0,0,0,255.8,120Z" style="fill:#1e1e1e"/>
+                    <path d="M472,232H440a24,24,0,0,0,0,48h32a24,24,0,0,0,0-48Z" style="fill:#1e1e1e"/>
+                    <path d="M255.8,416a24,24,0,0,0-24,24v32a24,24,0,1,0,48,0V440A24,24,0,0,0,255.8,416Z" style="fill:#1e1e1e"/>
+                    <path d="M96,256.05a24,24,0,0,0-24-24H40a24,24,0,1,0,0,48H72A24,24,0,0,0,96,256.05Z" style="fill:#1e1e1e"/>
+                    <path d="M255.8,96a24,24,0,0,0,24-24V40a24,24,0,0,0-48,0V72a24,24,0,0,0,24,24Z" style="fill:#1e1e1e"/>
+                    <path d="M402.89,142.87l22.63-22.63a24,24,0,0,0-33.85-34l-.07.07L369,109a24,24,0,0,0,33.86,34Z" style="fill:#1e1e1e"/>
+                    <path d="M402.89,369.22a24,24,0,0,0-34,33.87l.06.05,22.63,22.63a24,24,0,0,0,34-33.86l-.06-.06Z" style="fill:#1e1e1e"/>
+                    <path d="M108.7,369.22,86.07,391.85a24,24,0,1,0,33.85,34l.07-.07,22.63-22.63a24,24,0,1,0-33.86-34Z" style="fill:#1e1e1e"/>
+                    <path d="M108.7,142.87a24,24,0,1,0,34-33.89l0,0L120,86.32a24,24,0,1,0-34,33.83l.09.09Z" style="fill:#1e1e1e"/>
+                </g>
+            </svg>
+            <svg onclick="lightMode()" viewBox="0 0 312.81 311.51" width="25px" id="moon-icon">
+                <path d="M305.2,178.16a11,11,0,0,0-9.2,2A117.36,117.36,0,0,1,260.4,201a111.48,111.48,0,0,1-40.4,7.2A117.45,117.45,0,0,1,102.4,90.56a123.27,123.27,0,0,1,6.4-38.8A107.41,107.41,0,0,1,128,17.36,10.21,10.21,0,0,0,126.4,3a11,11,0,0,0-9.2-2,161.41,161.41,0,0,0-84.8,56.8,158.38,158.38,0,1,0,280,132.8A9.71,9.71,0,0,0,305.2,178.16Z" transform="translate(0 -0.65)" style="fill:#1e1e1e"/>
+            </svg>
+        </nav>
+    </header>
+@endsection 
+
+@section('footer')
+ @include('front.footer23')
+@endsection
 
 @section('content')
+
 <div class="container">
-    <h1>Ajouter une déclinaison pour {{ $product->name }}</h1>
-    
-    <form action="{{ route('articles.store') }}" method="POST">
-        @csrf
-        <input type="hidden" name="product_id" value="{{ $product->id }}">
+    <h1>Liste des articles</h1>
 
-        <div class="form-group">
-            <label>Taille</label>
-            <input type="text" name="size" class="form-control" required>
-        </div>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-        <div class="form-group">
-            <label>Couleur</label>
-            <input type="text" name="color" class="form-control" required>
-        </div>
+    <a href="{{ route('admin.articles.create') }}" class="btn btn-primary mb-3">Ajouter un article</a>
 
-        <div class="form-group">
-            <label>Stock</label>
-            <input type="number" name="stock" class="form-control" min="0" required>
-        </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Catégorie</th>
+                <th>Image</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($articles as $article)
+                <tr>
+                    <td>{{ $article->title }}</td>
+                    <td>{{ $article->category->name ?? 'Non défini' }}</td>
+                    <td><img src="{{ asset('storage/' . $article->image) }}" width="80"></td>
+                    <td>{{ $article->created_at->format('d/m/Y') }}</td>
+                    <td>
+                        <a href="{{ route('admin.articles.edit', $article) }}" class="btn btn-warning btn-sm">Modifier</a>
+                        <form action="{{ route('admin.articles.destroy', $article) }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer ?')">
+                            @csrf @method('DELETE')
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        <div class="form-group">
-            <label>SKU (Référence unique)</label>
-            <input type="text" name="sku" class="form-control" required>
-        </div>
-
-        <button type="submit" class="btn btn-success">Enregistrer</button>
-    </form>
+    {{ $articles->links() }}
 </div>
+
 @endsection

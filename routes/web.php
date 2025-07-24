@@ -1,7 +1,7 @@
 <?php
-use App\Http\Controllers\ArticleController;
+
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ArticleController;
+use App\Http\Controllers\Admin\ArticleCategoryController;
 
 Route::get('/', function () {
     return view('layouts.accueil');
@@ -56,4 +60,15 @@ Route::post('/shop/{product}/avis', [ShopController::class, 'storeReview'])
 // Blog
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{article}', [BlogController::class, 'show'])->name('blog.show');
+
+Route::prefix('admindashboard')->middleware(['auth'])->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return view('layouts.admindashboard');
+    })->name('dashboard');
+
+    Route::resource('products', ProductController::class);
+    Route::resource('categories', ProductCategoryController::class);
+    Route::resource('articles', ArticleController::class);
+    Route::resource('article-categories', ArticleCategoryController::class);
+});
 

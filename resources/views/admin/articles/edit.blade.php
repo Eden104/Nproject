@@ -6,18 +6,12 @@
     <header>
         <img src="{{asset('Dsite/image/brand-logo.svg')}}" width="100" alt="myshop logo">
         <nav class="main-nav">
-            <ul>
-                <li><a href="{{route('accueil')}}">Home</a></li>
-                <li><a href="{{route('shop.index')}}">Shop</a></li>
-                <li><a href="{{route('blog.index')}}">Blog</a></li>
-                <li><a href="contact.html" id="selected">Contact</a></li>
-                <li><a href="profile.html">Profile</a></li>
-                <li><a href="{{route('signup')}}">Signup</a></li>
-                <li><a href="{{ route('admin.products.index') }}">Gestion Produits</a></li>
-                <li><a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a></li>
-                <li><a href="{{ route('admin.articles.index') }}">Gestion Articles</a></li>
-                <li><a href="{{ route('admin.article_categories.index') }}">Gestion Catégories Articles</a></li>
-            </ul>
+           <a href="{{ route('admin.dashboard') }}">Home-D</a>
+           <a href="{{ route('admin.products.index') }}">Gestion Produits</a>
+           <a href="{{ route('admin.categories.index') }}">Gestion Catégories Produits</a>
+           <a href="{{ route('admin.articles.index') }}">Gestion Articles</a>
+           <a href="{{ route('admin.article-categories.index') }}">Gestion Catégories Articles</a>
+            
            
 
             @auth
@@ -55,7 +49,48 @@
 @endsection
 
 @section('content')
+<div class="container">
+    <h1>Modifier l’article</h1>
 
+    <form action="{{ route('admin.articles.update', $article) }}" method="POST" enctype="multipart/form-data">
+        @csrf @method('PUT')
+
+        <div class="form-group">
+            <label>Titre</label>
+            <input type="text" name="title" class="form-control" value="{{ old('title', $article->title) }}" required>
+            @error('title') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" rows="5" class="form-control" required>{{ old('description', $article->description) }}</textarea>
+            @error('description') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Catégorie</label>
+            <select name="article_category_id" class="form-control">
+                @foreach($categories as $category)
+                    <option value="{{ $category->id }}" @selected($article->article_category_id == $category->id)>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+            @error('article_category_id') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <div class="form-group">
+            <label>Image actuelle</label><br>
+            <img src="{{ asset('storage/' . $article->image) }}" width="100"><br><br>
+            <label>Changer l’image</label>
+            <input type="file" name="image" class="form-control">
+            @error('image') <small class="text-danger">{{ $message }}</small> @enderror
+        </div>
+
+        <button class="btn btn-primary">Mettre à jour</button>
+        <a href="{{ route('admin.articles.index') }}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
 
 
 @endsection
